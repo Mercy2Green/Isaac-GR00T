@@ -844,5 +844,5 @@ DATA_CONFIG_MAP = {
     "unitree_g1_full_body": UnitreeG1FullBodyDataConfig(),
     "oxe_droid": OxeDroidDataConfig(),
     "agibot_genie1": AgibotGenie1DataConfig(),
-    "m2g_multi_agent": M2GMultiAgentDataConfig(),
+    "m2g_g1_multi_agent": M2GMultiAgentDataConfig(),
 }

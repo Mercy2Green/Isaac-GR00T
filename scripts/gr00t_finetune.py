@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import debugpy
+debugpy.listen(2457)
+print("Waiting for debugger attach...")
+debugpy.wait_for_client()
+print("Debugger attached.")
+
 import os
 import subprocess
 import sys

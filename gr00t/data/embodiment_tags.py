@@ -38,6 +38,10 @@ class EmbodimentTag(Enum):
     """
 
     M2G_G1_VLA_DAWN = "new_embodiment"
+    """
+    The M2G Generation 1 VLA Dawn dataset.
+    """
+    M2G_G1_MULTI_AGENT = "new_embodiment"
 
 
 # Embodiment tag string: to projector index in the Action Expert Module
