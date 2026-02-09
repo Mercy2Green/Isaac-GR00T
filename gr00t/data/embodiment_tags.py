@@ -37,6 +37,8 @@ class EmbodimentTag(Enum):
     Any new embodiment for finetuning.
     """
 
+    M2G_G1_VLA_DAWN = "new_embodiment"
+
 
 # Embodiment tag string: to projector index in the Action Expert Module
 EMBODIMENT_TAG_MAPPING = {
