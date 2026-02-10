@@ -242,6 +242,7 @@ def main(config: ArgsConfig):
             seed=42,
             metadata_config={
                 "percentile_mixing_method": "weighted_average",
+                # "percentile_mixing_method": "min_max",
             },
         )
         print(f"Loaded {len(single_datasets)} datasets, with {config.dataset_path} ")

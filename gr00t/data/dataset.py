@@ -154,17 +154,27 @@ class LeRobotSingleDataset(Dataset):
         self._delta_indices = self._get_delta_indices()
         self._max_delta_index = self._get_max_delta_index()
 
-        # NOTE(YL): method to predict the task progress
-        if "action.task_progress" in self._modality_keys["action"]:
+        # # NOTE(YL): method to predict the task progress
+        # if "action.task_progress" in self._modality_keys["action"]:
+        #     print("action.task_progress is in the action modality, task progress will be label")
+        #     self._modality_keys["action"].append("action.task_progress")
+        #     self._metadata.modalities.action["task_progress"] = StateActionMetadata(
+        #         absolute=True, rotation_type=None, shape=(1,), continuous=True
+        #     )
+        #     # assume the task progress is uniformly distributed between 0 and 1
+        #     self._metadata.statistics.action["task_progress"] = DatasetStatisticalValues(
+        #         max=[1.0], min=[0.0], mean=[0.5], std=[0.2887], q01=[0.01], q99=[0.99]
+        #     )
+        if "action.task_progress" in self._modality_keys.get("action", []):
             print("action.task_progress is in the action modality, task progress will be label")
-            self._modality_keys["action"].append("action.task_progress")
+            # 不要再 append 了
             self._metadata.modalities.action["task_progress"] = StateActionMetadata(
                 absolute=True, rotation_type=None, shape=(1,), continuous=True
             )
-            # assume the task progress is uniformly distributed between 0 and 1
             self._metadata.statistics.action["task_progress"] = DatasetStatisticalValues(
                 max=[1.0], min=[0.0], mean=[0.5], std=[0.2887], q01=[0.01], q99=[0.99]
             )
+
 
         self.set_transforms_metadata(self.metadata)
         self.set_epoch(0)
@@ -307,12 +317,23 @@ class LeRobotSingleDataset(Dataset):
         simplified_modality_meta: dict[str, dict] = {}
         with open(modality_meta_path, "r") as f:
             le_modality_meta = LeRobotModalityMetadata.model_validate(json.load(f))
+
+        allowed = {"state": set(), "action": set()}
+        for m in ["state", "action"]:
+            cfg = self.modality_configs.get(m)
+            if cfg is None:
+                continue
+            for full_key in cfg.modality_keys:
+                assert full_key.startswith(m + ".")
+                allowed[m].add(full_key.split(".", 1)[1])
+
+
         for modality in ["state", "action"]:
             simplified_modality_meta[modality] = {}
-            le_state_action_meta: dict[str, LeRobotStateActionMetadata] = getattr(
-                le_modality_meta, modality
-            )
+            le_state_action_meta = getattr(le_modality_meta, modality)
             for subkey in le_state_action_meta:
+                if allowed[modality] and subkey not in allowed[modality]:
+                    continue
                 state_action_dtype = np.dtype(le_state_action_meta[subkey].dtype)
                 if np.issubdtype(state_action_dtype, np.floating):
                     continuous = True
@@ -1181,6 +1202,8 @@ class LeRobotMixtureDataset(Dataset):
             q99_list = []
 
             for task_idx, task_stats in enumerate(per_task_stats):
+                if modality not in task_stats:
+                    continue
                 w_i = normalized_weights[task_idx]
                 stats = task_stats[modality]
                 means = np.array(stats["mean"])
