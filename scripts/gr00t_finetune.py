@@ -13,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import debugpy
-debugpy.listen(2457)
-print("Waiting for debugger attach...")
-debugpy.wait_for_client()
-print("Debugger attached.")
+# import debugpy
+# debugpy.listen(2457)
+# print("Waiting for debugger attach...")
+# debugpy.wait_for_client()
+# print("Debugger attached.")
 
 import os
 import subprocess
@@ -25,6 +25,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Literal
+import swanlab
 
 import torch
 import tyro
@@ -198,6 +199,9 @@ def _copy_partial_action_expert_weights(old_dict, new_dict, old_dim, new_dim):
 
 
 def main(config: ArgsConfig):
+
+    swanlab.sync_wandb()
+
     """Main training function."""
     # ------------ step 1: load dataset ------------
     embodiment_tag = EmbodimentTag(config.embodiment_tag)
