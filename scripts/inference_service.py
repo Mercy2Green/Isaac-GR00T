@@ -54,6 +54,12 @@ Note: TensorRT engines must be built before running with --use-tensorrt flag.
 See deployment_scripts/README.md for instructions on building TensorRT engines.
 """
 
+# import debugpy
+# debugpy.listen(2457)
+# print("Waiting for debugger attach...")
+# debugpy.wait_for_client()
+# print("Debugger attached.")
+
 import time
 from dataclasses import dataclass
 from typing import Literal
