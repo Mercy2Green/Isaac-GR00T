@@ -183,6 +183,8 @@ class Gr00tPolicy(BasePolicy):
 
         if not is_batch:
             unnormalized_action = squeeze_dict_values(unnormalized_action)
+
+        print("Action computed by Gr00tPolicy.")
         return unnormalized_action
 
     def _get_action_from_normalized_input(self, normalized_input: Dict[str, Any]) -> torch.Tensor:
